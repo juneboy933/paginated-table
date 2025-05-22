@@ -1,0 +1,37 @@
+.container {
+  max-width: 800px;
+  margin: auto;
+  padding: 20px;
+}
+
+table {
+    width:  100%;
+    border-collapse: collapse;
+}
+
+tr {
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+img {
+    border-radius: 50%;
+}
+
+.btn-container {
+    margin-top: 20px;
+    text-align: center;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #80808046;
+    color: #000;
+    border: none;
+    border-radius: 5px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+button:hover {
+    background-color: #80808079;
+}
