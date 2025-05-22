@@ -22,6 +22,7 @@ const Dashboard = () => {
             setLoading(false);
         } catch (error) {
             console.error('Error fetching users.', error);
+        } finally{
             setLoading(true);
         }
     }
@@ -40,10 +41,10 @@ const Dashboard = () => {
             <table>
                 <thead>
                     <tr>
-                        <td>ID</td>
-                        <td>NAME</td>
-                        <td>EMAIL</td>
-                        <td>AVATAR</td>
+                        <th>ID</th>
+                        <th>NAME</th>
+                        <th>EMAIL</th>
+                        <th>AVATAR</th>
                     </tr>
                 </thead>
                 <tbody>
