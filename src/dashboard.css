@@ -4,6 +4,12 @@
   padding: 20px;
 }
 
+input {
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    padding: 6px 10px;
+    border-radius: 5px;
+}
 table {
     width:  100%;
     border-collapse: collapse;

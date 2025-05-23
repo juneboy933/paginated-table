@@ -6,6 +6,7 @@ const Dashboard = () => {
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1)
     const [loading, setLoading] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
 
     // const apiKey = 'reqres-free-v1';
 
@@ -23,7 +24,7 @@ const Dashboard = () => {
         } catch (error) {
             console.error('Error fetching users.', error);
         } finally{
-            setLoading(true);
+            setLoading(false);
         }
     }
 
@@ -31,12 +32,20 @@ const Dashboard = () => {
         fetchData();
     }, [page]);
 
-    // console.log(users);
+    const filteredUsers = users.filter((user) => `${user.first_name} ${user.last_name}`.toLowerCase().includes(searchTerm.toLowerCase()));
+
+    console.log(users);
     // console.log(page);
 
   return (
     <div className='container'>
         <h1>Users Dashboard (page {page})</h1>
+        <input 
+            type="text"
+            value={searchTerm}
+            placeholder='
+            Search user'
+            onChange={(e) => setSearchTerm(e.target.value)} />
         {loading ? <p>Loading ...</p> : (
             <table>
                 <thead>
@@ -48,7 +57,7 @@ const Dashboard = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {users.map((user) => (
+                    {filteredUsers.map((user) => (
                         <tr key={user.id}>
                             <td>{user.id}</td>
                             <td>{user.first_name} {user.last_name}</td>
