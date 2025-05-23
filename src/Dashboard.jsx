@@ -37,8 +37,8 @@ const Dashboard = () => {
     useEffect(() => {
         const timeout = setTimeout(() => {
             setSearchTerm(inputValue);
-        },1000);
-        return clearTimeout(timeout);
+        },500);
+        return () => clearTimeout(timeout);
     },[inputValue]);
 
     const filteredUsers = users.filter((user) => `${user.first_name} ${user.last_name}`.toLowerCase().includes(searchTerm.toLowerCase()));
