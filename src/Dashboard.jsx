@@ -7,6 +7,7 @@ const Dashboard = () => {
     const [totalPages, setTotalPages] = useState(1)
     const [loading, setLoading] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
+    const [inputValue, setInputValue] = useState('');
 
     // const apiKey = 'reqres-free-v1';
 
@@ -32,6 +33,14 @@ const Dashboard = () => {
         fetchData();
     }, [page]);
 
+    // debounce effect
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            setSearchTerm(inputValue);
+        },1000);
+        return clearTimeout(timeout);
+    },[inputValue]);
+
     const filteredUsers = users.filter((user) => `${user.first_name} ${user.last_name}`.toLowerCase().includes(searchTerm.toLowerCase()));
 
     console.log(users);
@@ -45,7 +54,7 @@ const Dashboard = () => {
             value={searchTerm}
             placeholder='
             Search user'
-            onChange={(e) => setSearchTerm(e.target.value)} />
+            onChange={(e) => setInputValue(e.target.value)} />
         {loading ? <p>Loading ...</p> : (
             <table>
                 <thead>
