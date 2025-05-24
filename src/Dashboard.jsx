@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import './dashboard.css'
+import UserRow from './UserRow';
 
 const Dashboard = () => {
     const [users, setUsers] = useState([]);
@@ -8,9 +9,11 @@ const Dashboard = () => {
     const [loading, setLoading] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [inputValue, setInputValue] = useState('');
+    const [selectedUser, setSelectedUser] = useState(null);
 
     // const apiKey = 'reqres-free-v1';
 
+    // Fetch data from APi
     const fetchData = async () => {
         try {
             const res = await fetch(`https://reqres.in/api/users?page=${page}`, {
@@ -29,6 +32,7 @@ const Dashboard = () => {
         }
     }
 
+    // Load it to our page
     useEffect(() => {
         fetchData();
     }, [page]);
@@ -41,9 +45,18 @@ const Dashboard = () => {
         return () => clearTimeout(timeout);
     },[inputValue]);
 
+    // Filter feature
     const filteredUsers = users.filter((user) => `${user.first_name} ${user.last_name}`.toLowerCase().includes(searchTerm.toLowerCase()));
 
-    console.log(users);
+    const handleClick = (user) => {
+        setSelectedUser(user);
+    }
+
+    const closeModal = () => {
+        setSelectedUser(null);
+    }
+
+    // console.log(users);
     // console.log(page);
 
   return (
@@ -67,12 +80,7 @@ const Dashboard = () => {
                 </thead>
                 <tbody>
                     {filteredUsers.map((user) => (
-                        <tr key={user.id}>
-                            <td>{user.id}</td>
-                            <td>{user.first_name} {user.last_name}</td>
-                            <td>{user.email}</td>
-                            <td><img src={user.avatar} alt='avatar' width={40} /></td>
-                        </tr>
+                       <UserRow key={user.id} user={user} onClick={handleClick}/>
                     ))}
                 </tbody>
             </table>
@@ -81,8 +89,19 @@ const Dashboard = () => {
             <button onClick={() => setPage(page - 1)} disabled={page === 1}>Prev</button>
             <button onClick={() => setPage(page + 1)}  disabled={page === totalPages}>Next</button>
         </div>
+        {selectedUser && (
+          <div className="modal">
+            <div className="modal-content">
+              <h3>{selectedUser.first_name} {selectedUser.last_name}</h3>
+              <p>Email: {selectedUser.email}</p>
+              <img src={selectedUser.avatar} alt="avatar" />
+              <button onClick={closeModal}>Close</button>
+            </div>
+          </div>
+        )}
     </div>
   )
+  
 }
 
 export default Dashboard
