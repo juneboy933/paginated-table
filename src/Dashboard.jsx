@@ -16,6 +16,7 @@ const Dashboard = () => {
         email: "",
     });
     const [adding, setAdding] = useState(false);
+    const [editingUser, setEditingUser] = useState(null);
 
     // const apiKey = 'reqres-free-v1';
 
@@ -84,6 +85,40 @@ const Dashboard = () => {
         setSelectedUser(null);
     }
 
+    const handleDelete = async(userId) => {
+        try{
+            const res = await fetch(`https://reqres.in/api/users/${userId}`, {
+                method: 'DELETE',
+                headers: {"x-api-key": "reqres-free-v1"},
+            });
+            // console.log(res);
+            if (res.status === 204) {
+                // Successfully deleted, no content
+                setUsers((prevUsers) => prevUsers.filter(user => user.id !== userId));
+                console.log("User deleted successfully.");
+              } else {
+                console.error("Failed to delete user.");
+              }
+        } catch (error) {
+          console.error("Error deleting user:", error);
+        }
+    }
+
+    const handleEdit = async() => {
+        const res = await fetch(`https://reqres.in/api/users/${editingUser.id}`,{
+            method: 'PUT',
+            headers: {
+                "content-type": "application/json",
+                "x-api-key": "reqres-free-v1",
+            },
+            body: JSON.stringify(editingUser),
+        });
+        const data = await res.json();
+        setUsers(users.map((user) => user.id === editingUser.id ? {...user, ...editingUser} : user));
+        setEditingUser(null);
+
+    }
+
     // console.log(users);
     // console.log(page);
 
@@ -130,7 +165,7 @@ const Dashboard = () => {
                 </thead>
                 <tbody>
                     {filteredUsers.map((user) => (
-                       <UserRow key={user.id} user={user} onClick={handleClick}/>
+                       <UserRow key={user.id} user={user} onClick={handleClick} onDelete={handleDelete} onEdit={(user) => setEditingUser(user)}/>
                     ))}
                 </tbody>
             </table>
@@ -148,6 +183,23 @@ const Dashboard = () => {
               <button onClick={closeModal}>Close</button>
             </div>
           </div>
+        )}
+        {editingUser && (
+            <div className='modal'>
+                <div className="modal-content">
+                    <h3>Edit user</h3>
+                    <form onSubmit={(e) => {
+                        e.preventDefault();
+                        handleEdit()}
+                    }>
+                        <input type="text" value={editingUser.first_name} onChange={(e) => setEditingUser({...editingUser, first_name: e.target.value})} />
+                        <input type="text" value={editingUser.last_name} onChange={(e) => setEditingUser({...editingUser, last_name: e.target.value})}/>
+                        <input type="email" value={editingUser.email} onChange={(e) => setEditingUser({...editingUser, email: e.target.value})}/>
+                        <button type="submit">Save</button>
+                        <button type="button" onClick={() => setEditingUser(null)}>Cancel</button>
+                    </form>
+                </div>
+            </div>
         )}
     </div>
   )
