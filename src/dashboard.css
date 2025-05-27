@@ -60,3 +60,9 @@ button:hover {
     border-radius: 10px;
     width: 300px;
 }
+
+form input {
+    margin-right: 0.5rem;
+    margin-bottom: 1rem;
+    padding: 6px 10px; 
+}

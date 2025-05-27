@@ -10,6 +10,12 @@ const Dashboard = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [inputValue, setInputValue] = useState('');
     const [selectedUser, setSelectedUser] = useState(null);
+    const [newUSer, setNewUser] = useState({
+        first_name:'',
+        last_name: '',
+        email: "",
+    });
+    const [adding, setAdding] = useState(false);
 
     // const apiKey = 'reqres-free-v1';
 
@@ -37,6 +43,28 @@ const Dashboard = () => {
         fetchData();
     }, [page]);
 
+    // Post new user to the API
+    const createNewUser = async() => {
+        const res = await fetch("https://reqres.in/api/users", {
+            method: 'POST',
+            headers: {
+                "content-type": "application/json",
+                "x-api-key": "reqres-free-v1"
+            },
+            body: JSON.stringify(newUSer),
+        });
+        const data = await res.json();
+        setUsers([data, ...users]);
+        setNewUser({first_name: '',last_name: '',email: ''});
+    }
+    
+    const handleSubmit = async(e) => {
+        e.preventDefault();
+        setAdding(true);
+        await createNewUser();
+        setAdding(false);
+    }
+
     // debounce effect
     useEffect(() => {
         const timeout = setTimeout(() => {
@@ -62,6 +90,28 @@ const Dashboard = () => {
   return (
     <div className='container'>
         <h1>Users Dashboard (page {page})</h1>
+        <form onSubmit={handleSubmit}>
+            <input 
+                type="text" 
+                value={newUSer.first_name} 
+                placeholder='First name'
+                onChange={e => setNewUser({...newUSer, first_name: e.target.value})}/>
+            <input 
+                type="text" 
+                value={newUSer.last_name} 
+                placeholder='Last name' 
+                onChange={e => setNewUser({...newUSer, last_name: e.target.value})}/>
+            <input 
+                type="email" 
+                value={newUSer.email} 
+                placeholder='Email'
+                onChange={e => setNewUser({...newUSer, email: e.target.value})}/>
+            <button 
+                type='submit'
+                disabled={
+                    !newUSer.first_name || !newUSer.last_name || !newUSer.email
+                }>{adding ? 'Adding' : 'Add user'}</button>
+        </form>
         <input 
             type="text"
             value={searchTerm}
